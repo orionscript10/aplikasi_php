@@ -1,11 +1,18 @@
 <?php
-//session_start();
+session_start();
 if (empty($_SESSION["username_recafe"])) {
-    header("Location:login");
+    header("Location:index.php?x=login");
+    exit;
 }
 include "proses/connect.php";
-$query = mysqli_query($conn, "SELECT * FROM tb_user WHERE username= '" . $_SESSION['username_recafe'] . "'");
-$hasil = mysqli_fetch_array($query);
+
+// Use prepared statement
+$stmt = $conn->prepare("SELECT * FROM tb_user WHERE username = ?");
+$stmt->bind_param("s", $_SESSION['username_recafe']);
+$stmt->execute();
+$query = $stmt->get_result();
+$hasil = $query->fetch_array(MYSQLI_ASSOC);
+$stmt->close();
 
 ?>
 <!doctype html>
