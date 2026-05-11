@@ -77,8 +77,8 @@ while ($record = mysqli_fetch_array($query)) {
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="catatan" placeholder="Catatan" name="keterangan">
-                      <label for="catatan">Catatan</label>
+                      <input type="text" class="form-control" id="keterangan" placeholder="Keterangan" name="keterangan">
+                      <label for="keterangan">Keterangan</label>
                     </div>
                   </div>
                 </div>
@@ -124,30 +124,30 @@ while ($record = mysqli_fetch_array($query)) {
                     <?php echo $no++; ?>
                   </th>
                   <td>
-                    <?php echo $row['id_order']; ?>
+                    <?php echo htmlspecialchars($row['id_order']); ?>
                   </td>
                   <td>
-                    <?php echo $row['pelanggan']; ?>
+                    <?php echo htmlspecialchars($row['pelanggan']); ?>
                   </td>
                   <td>
-                    <?php echo $row['meja']; ?>
+                    <?php echo htmlspecialchars($row['meja']); ?>
                   </td>
                   <td>
                     <?php echo number_format((int) $row['total_harga'], 0, ',', '.'); ?>
                   </td>
                   <td>
-                    <?php echo $row['nama']; ?>
+                    <?php echo htmlspecialchars($row['nama'] ?? '-'); ?>
                   </td>
                   <td>
                     <?php echo (!empty($row['id_bayar'])) ? "<span class='badge bg-success'>Sudah Dibayar</span>" : "<span class='badge bg-warning'>Belum Dibayar</span>"; ?>
                   </td>
                   <td>
-                    <?php echo $row['waktu_order']; ?>
+                    <?php echo htmlspecialchars($row['waktu_order']); ?>
                   </td>
                   <td>
                     <div class="d-flex">
                       <a class="btn btn-info btn-sm me-1"
-                        href="./?x=orderitem&order=<?php echo $row['id_order'] . "&meja=" . $row['meja'] . "&pelanggan=" . $row['pelanggan']; ?>"><i
+                        href="index.php?x=orderitem&order=<?php echo urlencode($row['id_order']) . "&meja=" . urlencode($row['meja']) . "&pelanggan=" . urlencode($row['pelanggan']); ?>"><i
                           class="bi bi-eye"></i></a>
                       <button
                         class="<?php echo (!empty($row['id_bayar'])) ? "btn btn-secondary disabled" : "btn btn-warning"; ?> me-1"
@@ -176,7 +176,7 @@ while ($record = mysqli_fetch_array($query)) {
           <div class="modal-dialog modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Menu Makanan dan Minuman</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Order</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -185,7 +185,7 @@ while ($record = mysqli_fetch_array($query)) {
                     <div class="col-lg-3">
                       <div class="form-floating mb-3">
                         <input readonly type="text" class="form-control" id="order" name="kode_order"
-                          value="<?php echo $row['id_order']; ?>" readonly>
+                          value="<?php echo htmlspecialchars($row['id_order']); ?>" readonly>
                         <label for="order">Kode Order</label>
                         <div class="invalid-feedback">
                           Masukkan Kode Order.
@@ -195,7 +195,7 @@ while ($record = mysqli_fetch_array($query)) {
                     <div class="col-lg-2">
                       <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="meja" placeholder="Nomor Meja" name="meja"
-                          value="<?php echo $row['meja']; ?>" required>
+                          value="<?php echo htmlspecialchars($row['meja']); ?>" required>
                         <label for="meja">Meja</label>
                         <div class="invalid-feedback">
                           Masukkan Nomor Meja.
@@ -205,7 +205,7 @@ while ($record = mysqli_fetch_array($query)) {
                     <div class="col-lg-7">
                       <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="pelanggan" placeholder="Pelanggan" name="pelanggan"
-                          value="<?php echo $row['pelanggan']; ?>" required>
+                          value="<?php echo htmlspecialchars($row['pelanggan']); ?>" required>
                         <label for="pelanggan">Nama Pelanggan</label>
                         <div class="invalid-feedback">
                           Masukkan Nama Pelanggan.
@@ -216,9 +216,9 @@ while ($record = mysqli_fetch_array($query)) {
                   <div class="row">
                     <div class="col-lg-12">
                       <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="catatan" placeholder="Catatan" name="catatan"
-                          value="<?php echo $row['catatan']; ?>">
-                        <label for="catatan">Catatan</label>
+                        <input type="text" class="form-control" id="keterangan" placeholder="Keterangan" name="keterangan"
+                          value="<?php echo htmlspecialchars($row['keterangan'] ?? ''); ?>">
+                        <label for="keterangan">Keterangan</label>
                       </div>
                     </div>
                   </div>
@@ -245,13 +245,13 @@ while ($record = mysqli_fetch_array($query)) {
               </div>
               <div class="modal-body">
                 <form class="needs-validation" novalidate action="proses/proses_delete_order.php" method="POST">
-                  <input type="hidden" name="kode_order" value="<?php echo $row['id_order']; ?>">
+                  <input type="hidden" name="kode_order" value="<?php echo htmlspecialchars($row['id_order']); ?>">
                   <div class="row">
                     <div class="col-lg-12">
                       Apakah anda yakin ingin menghapus order atas nama
-                      <b><?php echo $row['pelanggan']; ?></b> dengan kode order
+                      <b><?php echo htmlspecialchars($row['pelanggan']); ?></b> dengan kode order
                       <b>
-                        <?php echo $row['id_order']; ?>
+                        <?php echo htmlspecialchars($row['id_order']); ?>
                       </b>?
                     </div>
                   </div>
