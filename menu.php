@@ -338,7 +338,7 @@ $select_kat_menu = mysqli_query($conn, "SELECT id_kat_menu, kategori_menu FROM t
                                         <div class="col-lg-4">
                                             <div class="form-floating mb-3">
                                                 <select class="form-select" aria-label="Default select example"
-                                                    name="kat_menu" required disabled>
+                                                    name="kat_menu" required>
                                                     <option selected hidden>Pilih Kategori Menu</option>
                                                     <?php
                                                     foreach ($select_kat_menu as $value) {
