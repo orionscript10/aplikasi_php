@@ -30,13 +30,19 @@ if (!empty($_POST['input_menu_validate'])) {
                 $statusUpload = 0;
             } else {
                 //cek format file
-                if ($imageType != "jpg" && $imageType != "png" && $imageType != "jpeg") {
+                if ($imageType != "jpg" && $imageType != "png" && $imageType != "jpeg" && $imageType != "gif") {
                     $message = '<script>alert("Format file tidak sesuai!");</script>';
                     $statusUpload = 0;
                 } else {
-                    if ($imageType != 'jpg' && $imageType != 'png' && $imageType != 'jpeg' && $imageType != 'gif') {
-                        $message = '<script>alert("Format file tidak sesuai!");</script>';
-                        $statusUpload = 0;
+                    if (move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
+                        $query = mysqli_query($conn, "UPDATE tb_daftar_menu SET foto='" . $kode_rand . "_" . $_FILES['foto']['name'] . "', nama_menu='$nama_menu', keterangan='$keterangan', kategori='$kat_menu', harga='$harga', stok='$stok' WHERE id='$id'");
+                        if ($query) {
+                            $message = '<script>alert("Data menu berhasil diperbarui!"); window.location = "../menu";</script>';
+                        } else {
+                            $message = '<script>alert("Data menu gagal diperbarui!");</script>';
+                        }
+                    } else {
+                        $message = '<script>alert("Maaf, terjadi kesalahan saat mengupload file."); window.location = "../menu";</script>';
                     }
                 }
             }
@@ -44,22 +50,6 @@ if (!empty($_POST['input_menu_validate'])) {
     }
     if ($statusUpload == 0) {
         $message .= '<script>alert("File gagal diupload!"); window.location = "../menu";</script>';
-    } else {
-        $select = mysqli_query($conn, "SELECT * FROM tb_daftar_menu WHERE nama_menu='$nama_menu'");
-        if (mysqli_num_rows($select) > 0) {
-            $message = '<script>alert("Nama menu sudah digunakan!"); window.location = "../menu";</script>';
-        } else {
-            if (move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
-                $query = mysqli_query($conn, "UPDATE tb_daftar_menu SET foto='" . $kode_rand . "_" . $_FILES['foto']['name'] . "', nama_menu='$nama_menu', keterangan='$keterangan', kategori='$kat_menu', harga='$harga', stok='$stok' WHERE id=$id");
-                if ($query) {
-                    $message = '<script>alert("Data menu berhasil diperbarui!"); window.location = "../menu";</script>';
-                } else {
-                    $message = '<script>alert("Data menu gagal diperbarui!"); window.location = "../menu";</script>';
-                }
-            } else {
-                $message = '<script>alert("maaf, terjadi kesalahan saat mengupload file."); window.location = "../menu";</script>';
-            }
-        }
     }
 }
 echo $message;
