@@ -1,24 +1,27 @@
 <?php
+session_start();
 include("connect.php");
-$nama = (isset($_POST['nama'])) ? htmlentities($_POST['nama']) : '';
-$username = (isset($_POST['username'])) ? htmlentities($_POST['username']) : '';
-$password = md5("password");
-$level = (isset($_POST['level'])) ? htmlentities($_POST['level']) : '';
-$nohp = (isset($_POST['nohp'])) ? htmlentities($_POST['nohp']) : '';
-$alamat = (isset($_POST['alamat'])) ? htmlentities($_POST['alamat']) : '';
 
 if (!empty($_POST['input_user_validate'])) {
-    $select = mysqli_query($conn, "SELECT * FROM tb_user WHERE username='$username'");
-    if (mysqli_num_rows($select) > 0) {
-        $message = '<script>alert("Username sudah digunakan!"); window.location = "../user";</script>';
+    $nama = (isset($_POST['nama'])) ? trim($_POST['nama']) : '';
+    $username = (isset($_POST['username'])) ? trim($_POST['username']) : '';
+    $level = (isset($_POST['level'])) ? intval($_POST['level']) : 0;
+    $nohp = (isset($_POST['nohp'])) ? trim($_POST['nohp']) : '';
+    $alamat = (isset($_POST['alamat'])) ? trim($_POST['alamat']) : '';
+    
+    // Hash the default password
+    $default_password = 'password';
+    $hashed_password = password_hash($default_password, PASSWORD_BCRYPT);
+    
+    $stmt = $conn->prepare("INSERT INTO tb_user (nama, username, password, level, nohp, alamat) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssiss", $nama, $username, $hashed_password, $level, $nohp, $alamat);
+    $result = $stmt->execute();
+    $stmt->close();
+    
+    if ($result) {
+        echo "<script>alert('User berhasil ditambahkan!'); window.location = '../index.php?x=user';</script>";
     } else {
-        $query = mysqli_query($conn, "INSERT INTO tb_user VALUES (NULL,'$nama','$username','$password','$level','$nohp','$alamat')");
-        if ($query) {
-            $message = '<script>alert("Data user berhasil ditambahkan!"); window.location = "../user";</script>';
-        } else {
-            $message = '<script>alert("Data user gagal ditambahkan!"); window.location = "../user";</script>';
-        }
+        echo "<script>alert('Gagal menambahkan user!'); window.history.back();</script>";
     }
 }
-echo $message;
 ?>
