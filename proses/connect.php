@@ -18,4 +18,7 @@ $conn = mysqli_connect($db_host, $db_user, $db_password, $db_name);
 if (!$conn) {
     die("Gagal Koneksi: " . mysqli_connect_error());
 }
+
+// Set charset to utf8mb4
+mysqli_set_charset($conn, "utf8mb4");
 ?>
